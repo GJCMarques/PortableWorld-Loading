@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portable World - Solution Providers</title>
+
+    <link rel="icon" type="image/png" href="imgs/logo_NB.png">
+    <link rel="shortcut icon" type="image/png" href="imgs/logo_NB.png">
+    <link rel="apple-touch-icon" href="imgs/logo_NB.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            background-color: #FFFFFF;
+        }
+
+        /* ==================== LOADING SCREEN ==================== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+        }
+
+        .loader-logo-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            animation: logoPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(0, 45, 79, 0.3));
+        }
+
+        .loader-logo-center img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                filter: drop-shadow(0 0 15px rgba(0, 45, 79, 0.3));
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+                filter: drop-shadow(0 0 25px rgba(74, 144, 226, 0.5));
+            }
+        }
+
+        .loader-orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+        }
+
+        .loader-orbit:nth-child(1) {
+            border-top: 3px solid #002D4F;
+            border-right: 3px solid #002D4F;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader-orbit:nth-child(2) {
+            width: 85%;
+            height: 85%;
+            top: 7.5%;
+            left: 7.5%;
+            border-bottom: 3px solid #004A7F;
+            border-left: 3px solid #004A7F;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        .loader-orbit:nth-child(3) {
+            width: 110%;
+            height: 110%;
+            top: -5%;
+            left: -5%;
+            border-top: 2px solid rgba(0, 45, 79, 0.4);
+            border-bottom: 2px solid rgba(0, 45, 79, 0.4);
+            animation: spin 2.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #002D4F;
+            letter-spacing: 3px;
+            min-width: 130px;
+            text-align: center;
+        }
+
+        /* ==================== MAIN CONTENT & LAYOUT ==================== */
+        #main-content {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.8s ease-in 0.3s;
+        }
+
+        #main-content.visible {
+            opacity: 1;
+        }
+
+        #animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #FFFFFF; 
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 4rem;
+            color: #002D4F;
+        }
+
+        .center-block-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 20vh;
+        }
+
+        .center-logo {
+            max-width: 500px;
+            width: 90%; 
+            height: auto;
+            margin-bottom: 6rem; 
+            animation: slideDownFade 1s ease-out 0.4s both;
+            filter: drop-shadow(0 5px 15px rgba(0, 45, 79, 0.15));
+        }
+
+        @keyframes slideDownFade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-message {
+            max-width: 900px;
+            animation: slideUpFade 1s ease-out 0.6s both;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-message h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #002D4F;
+            letter-spacing: -1px;
+        }
+
+        .main-message h1 strong {
+            font-weight: 700;
+            background: linear-gradient(135deg, #004A7F 0%, #002D4F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .main-message p {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: rgba(0, 45, 79, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Footer info */
+        .footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            animation: fadeInUp 1s ease-out 0.8s both;
+            width: 100%;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid #004A7F;
+        }
+
+        .contact-info p {
+            font-size: 0.938rem;
+            font-weight: 500;
+            color: rgba(0, 45, 79, 0.85);
+            letter-spacing: 0.5px;
+            display: flex; /* Alinha o ícone e o texto */
+            align-items: center;
+        }
+
+        /* NOVO ESTILO PARA OS ÍCONES DE CONTACTO */
+        .contact-info i {
+            color: #004A7F; /* Cor Azul da marca */
+            margin-right: 12px;
+            width: 18px; /* Largura fixa para alinhar verticalmente */
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .contact-info a {
+            color: #004A7F;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .contact-info a:hover {
+            color: #002D4F;
+            text-shadow: 0 0 10px rgba(0, 74, 127, 0.6);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 45, 79, 0.05);
+            border-radius: 50%;
+            color: rgba(0, 45, 79, 0.7);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 45, 79, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .social-link:hover {
+            background: rgba(0, 74, 127, 0.15);
+            color: #004A7F;
+            border-color: #004A7F;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper { padding: 2.5rem 2rem; }
+            .main-message h1 { font-size: 3rem; }
+            .center-logo { max-width: 380px; }
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 2rem 1.5rem; }
+            .main-message h1 { font-size: 2.25rem; }
+            .main-message p { font-size: 1.1rem; }
+            
+            .center-logo { max-width: 280px; margin-bottom: 1.5rem; }
+            .center-block-container { padding-bottom: 5rem; }
+            
+            .footer-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+            .contact-info {
+                border-left: none;
+                padding-left: 0;
+                border-top: 2px solid #004A7F;
+                padding-top: 1rem;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-message h1 { font-size: 1.8rem; }
+            .center-logo { max-width: 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-orbit"></div>
+            <div class="loader-orbit"></div>
+            <div class="loader-orbit"></div>
+            <div class="loader-logo-center">
+                <img src="imgs/logo_NB.png" alt="Portable World">
+            </div>
+        </div>
+        <div class="loading-text" id="loading-text">Loading</div>
+    </div>
+
+    <div id="main-content">
+        <canvas id="animated-background"></canvas>
+        
+        <div class="content-wrapper">
+            
+            <div class="center-block-container">
+                <img src="imgs/logo_PB_NB.png" alt="Portable World Logo" class="center-logo">
+
+                <div class="main-message">
+                    <h1>Website em <strong>Manutenção</strong></h1>
+                    <p>Voltaremos em breve com uma nova experiência digital.</p>
+                </div>
+            </div>
+
+            <div class="footer-info">
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:production@portableworld.eu">production@portableworld.eu</a></p>
+                    <p><i class="fas fa-phone"></i> +351 229 42 16 43</p>
+                </div>
+
+                <div class="social-icons">
+                    <a href="#" class="social-link" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==================== LOADING TEXT ANIMATION ====================
+        const loadingTextElement = document.getElementById('loading-text');
+        const loadingStates = ['Loading.', 'Loading..', 'Loading...'];
+        let currentStateIndex = 0;
+
+        const loadingTextInterval = setInterval(function() {
+            loadingTextElement.textContent = loadingStates[currentStateIndex];
+            currentStateIndex = (currentStateIndex + 1) % loadingStates.length;
+        }, 400);
+
+        // ==================== LOADING SCREEN CONTROL ====================
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                clearInterval(loadingTextInterval);
+
+                const loadingScreen = document.getElementById('loading-screen');
+                const mainContent = document.getElementById('main-content');
+
+                loadingScreen.classList.add('fade-out');
+                mainContent.classList.add('visible');
+
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                }, 800);
+            }, 1200); 
+        });
+
+        // ==================== ANIMATED BACKGROUND ====================
+        const canvas = document.getElementById('animated-background');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        let mouse = { x: null, y: null, radius: 200 };
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        const particles = [];
+        const particleCount = window.innerWidth < 768 ? 35 : 150; 
+        const connectionDistance = 140;
+
+        class Particle {
+            constructor(isFloatingShape = false) {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.isFloatingShape = isFloatingShape;
+                this.radius = isFloatingShape ? Math.random() * 15 + 5 : Math.random() * 2 + 1;
+                
+                const colors = ['#004A7F', '#002D4F', '#4A90E2'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                this.baseOpacity = Math.random() * 0.5 + 0.2;
+                if (isFloatingShape) this.baseOpacity = 0.05; 
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                if (!this.isFloatingShape && mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < mouse.radius) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        const directionX = forceDirectionX * force * 2; 
+                        const directionY = forceDirectionY * force * 2;
+                        
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                if (this.isFloatingShape) {
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + this.radius, this.y + this.radius * 2);
+                    ctx.lineTo(this.x - this.radius, this.y + this.radius * 2);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.baseOpacity;
+                    ctx.fill();
+                } else {
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.baseOpacity;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function initParticles() {
+            particles.length = 0;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle(false));
+            }
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Particle(true));
+            }
+        }
+        initParticles();
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                if (particles[i].isFloatingShape) continue; 
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    if (particles[j].isFloatingShape) continue;
+
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        const opacity = (1 - distance / connectionDistance) * 0.3;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 74, 127, ${opacity})`; 
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+                
+                if (mouse.x != null) {
+                    let dx = mouse.x - particles[i].x;
+                    let dy = mouse.y - particles[i].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 45, 79, ${0.4 - distance/150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, width, height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', function() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        animate();
+    </script>
+</body>
+</html>
